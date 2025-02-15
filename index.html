@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+    <h1>Upload a File</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            const formData = new FormData();
+            const fileInput = document.getElementById("fileInput");
+
+            if (fileInput.files.length === 0) {
+                document.getElementById("message").innerText = "Please select a file.";
+                return;
+            }
+
+            formData.append("file", fileInput.files[0]);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "upload.php", true); // Assuming you handle file upload in `upload.php`
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    document.getElementById("message").innerText = "File uploaded successfully!";
+                } else {
+                    document.getElementById("message").innerText = "Error uploading file.";
+                }
+            };
+
+            xhr.onerror = function() {
+                document.getElementById("message").innerText = "Request failed.";
+            };
+
+            xhr.send(formData); // Send the form data (file)
+        });
+    </script>
+</body>
+</html>
